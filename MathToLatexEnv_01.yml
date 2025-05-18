@@ -1,0 +1,24 @@
+name: math_to_latex
+channels:
+  - defaults
+  - conda-forge
+  - pytorch
+  - nvidia
+dependencies:
+  - python=3.10
+  - numpy
+  - opencv
+  - pillow
+  - tqdm
+  - pyqt
+  - lxml
+  - scikit-image
+  - scikit-learn
+  - pandas
+  - scipy
+  - matplotlib
+  - optuna
+  - pytorch-cuda
+  - pytorch
+  - torchvision
+  - torchaudio

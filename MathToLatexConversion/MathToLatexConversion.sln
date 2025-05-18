@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "MathToLatexConversion", "MathToLatexConversion.pyproj", "{D8D1705F-D59A-43BE-AB43-AD60B2D1B806}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D8D1705F-D59A-43BE-AB43-AD60B2D1B806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8D1705F-D59A-43BE-AB43-AD60B2D1B806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA08572B-F953-4A93-8EAF-C9E2C591C4B9}
+	EndGlobalSection
+EndGlobal
