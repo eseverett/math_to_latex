@@ -4,12 +4,14 @@ import time
 
 import cv2
 
-from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QPushButton, QFileDialog
+from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QHBoxLayout, QWidget, QLabel, QPushButton, QFileDialog, QDialog
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QImage, QPixmap
 
+from lib.image_preprocessing import ImageProcessing
+
 class UI(QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         # Set the window title and size
@@ -48,7 +50,9 @@ class UI(QMainWindow):
         self.addToLayout()
         self.setupButtonMethods()
 
-    def update_frame(self):
+        self.processed_image = None
+
+    def update_frame(self) -> None:
         """
         This function captures a frame from the camera and updates the label with the new image.
         """
@@ -71,7 +75,7 @@ class UI(QMainWindow):
 
         self.label.setPixmap(QPixmap.fromImage(q_image))
 
-    def closeEvent(self, event):
+    def closeEvent(self, event) -> None:
         """
         This function is called when the window is closed. It releases the camera and stops the timer.
         """
@@ -79,7 +83,7 @@ class UI(QMainWindow):
         self.timer.stop()
         super().closeEvent(event)
 
-    def addToLayout(self):
+    def addToLayout(self) -> None:
         """
         This function adds elements to the layout.
         """
@@ -95,7 +99,7 @@ class UI(QMainWindow):
         self.layout.addLayout(self.button_layout)
 
 
-    def setupButtonMethods(self):
+    def setupButtonMethods(self) -> None:
         """
         This function sets up the button methods for the UI.
         """
@@ -107,7 +111,7 @@ class UI(QMainWindow):
         self.button_convert_image.clicked.connect(self.convert_image)
         self.button_retry.clicked.connect(self.take_new_image)
 
-    def take_image(self):
+    def take_image(self) -> None:
         """
         This function captures an image by freezing the current frame from the camera.
         """
@@ -117,7 +121,7 @@ class UI(QMainWindow):
 
         self.timer.stop()
 
-    def import_image(self):
+    def import_image(self) -> None:
         """
         This function imports an image from the file system.
         """
@@ -147,7 +151,7 @@ class UI(QMainWindow):
 
         self.timer.stop()
 
-    def save_image(self):
+    def save_image(self) -> None:
         """
         Save the currently displayed frame.
         """
@@ -161,18 +165,60 @@ class UI(QMainWindow):
         if not path: return
         cv2.imwrite(path, self.current_frame)
 
-    def take_new_image(self):
+    def take_new_image(self) -> None:
         """
         This function resets the camera and starts capturing again.
         """
 
         self.timer.start()
 
-    def convert_image(self):
+    def convert_image(self) -> None:
         """
-        Placeholder for OCR -> LaTeX routine.
+        This function processes the current frame and displays the preprocessed image in a popup dialog.
         """
 
-        if self.current_frame is None: return
-        # TODO: plug in your conversion pipeline here
-        print("Running LaTeX conversion on current image...")
+        if self.current_frame is None:
+            return
+
+        processor = ImageProcessing(self.current_frame)
+        processor.run_preprocessing()
+        self.processed_image = processor.get_processed_image()  # uint8, shape=(64, new_w)
+
+        proc_rgb = cv2.cvtColor(self.processed_image, cv2.COLOR_GRAY2RGB)
+        h, w, ch = proc_rgb.shape
+        bytes_per_line = ch * w
+        qimg = QImage(
+            proc_rgb.data,
+            w, h,
+            bytes_per_line,
+            QImage.Format.Format_RGB888
+        )
+
+        popup = QDialog(self)
+        popup.setWindowTitle("Preprocessed Output")
+        popup.setModal(True)
+        popup.resize(w + 40, h + 80)  # leave space for the button
+
+        # Vertical layout: image on top, button at bottom
+        layout = QVBoxLayout(popup)
+
+        # Image label
+        img_label = QLabel(popup)
+        img_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        img_label.setPixmap(QPixmap.fromImage(qimg))
+        img_label.setFixedSize(w, h)
+        layout.addWidget(img_label)
+
+        # Continue button
+        btn_continue = QPushButton("Continue", popup)
+        btn_continue.clicked.connect(lambda: self._on_continue(popup))
+        layout.addWidget(btn_continue, alignment=Qt.AlignmentFlag.AlignCenter)
+
+        popup.exec()
+
+    def _on_continue(self, dialog: QDialog) -> None:
+        """
+        Called when the user clicks Continue in the popup.
+        Closes the popup and delegates to the next class (to be implemented).
+        """
+        dialog.close()

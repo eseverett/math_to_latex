@@ -26,9 +26,17 @@
     <InterpreterReference Include="CondaEnv|CondaEnv|math_to_latex" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="lib\data.py" />
+    <Compile Include="lib\evaluate.py" />
+    <Compile Include="lib\image_preprocessing.py" />
+    <Compile Include="lib\model.py" />
     <Compile Include="lib\QT_UI.py" />
+    <Compile Include="lib\train.py" />
+    <Compile Include="lib\tune.py" />
     <Compile Include="lib\__init__.py" />
     <Compile Include="main.py" />
+    <Compile Include="train_model.py" />
+    <Compile Include="tune_model.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />

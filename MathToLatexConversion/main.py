@@ -19,6 +19,7 @@ def run_UI():
 # This is the main entry point for the application.
 def main():
     print("Starting Math to Latex Conversion Application...")
+
     run_UI()
 
 if __name__ == "__main__":
